@@ -37,5 +37,9 @@ void ClockNewTick(clock_t clock){
     if(clock->ticks_count == clock->ticks_per_second){
         clock->ticks_count = START_VALUE;
         clock->time[SECONDS_UNITS]++;
+        if(clock->time[SECONDS_UNITS] == 10){
+            clock->time[SECONDS_UNITS] = 0;
+            clock->time[4]++;
+        }
     }
 }
