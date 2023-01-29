@@ -22,6 +22,12 @@ x-> 4) Simular el paso de n ciclos de reloj, consultar la hora y verificar que a
 
 clock_t reloj;
 
+void SimulateSeconds(int seconds) {
+    for(int index = 0; index < seconds * TICKS_PER_SECOND; index++){
+        ClockNewTick(reloj);
+    }
+}
+
 void setUp(void){
     static const uint8_t INICIAL[] = {1, 2, 3, 4};
     reloj = ClockCreate(TICKS_PER_SECOND);
@@ -53,23 +59,23 @@ void test_set_up_current_time(void){
 void test_one_second_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 3, 4, 0, 1};
     uint8_t hora[6];
-
-    for(int index = 0; index < TICKS_PER_SECOND; index++){
-        ClockNewTick(reloj);
-    }
+    SimulateSeconds(1);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
 
-// Simular el paso de n ciclos de reloj, consultar la hora y verificar que avano un segunto.
-
 void test_ten_second_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 3, 4, 1, 0};
     uint8_t hora[6];
+    SimulateSeconds(10);
+    ClockGetTime(reloj, hora, sizeof(hora));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
+}
 
-    for(int index = 0; index < 10 * TICKS_PER_SECOND; index++){
-        ClockNewTick(reloj);
-    }
+void test_one_minute_second_elapsed(void){
+    static const uint8_t ESPERADO[] = {1, 2, 3, 5, 0, 0};
+    uint8_t hora[6];
+    SimulateSeconds(60);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
