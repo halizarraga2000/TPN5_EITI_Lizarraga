@@ -2,6 +2,7 @@
 #include <string.h>
 
 #define TIME_SIZE 6
+#define ALARM_SIZE 4
 #define START_VALUE 0
 #define SECONDS_UNITS 5
 #define SECONDS_TENS 4
@@ -13,9 +14,32 @@ struct clock_s{
     uint16_t ticks_per_second;
     uint16_t ticks_count;
     uint8_t time[TIME_SIZE];
+    uint8_t alarm[ALARM_SIZE];
+
 };
 
 static struct clock_s instances;
+
+//static const uint8_t BCD_LIMITS[] = {MAX_TENS_VALUE, MAX_UNITS_VALUE};
+/*
+void IncrementTime(clock_t clock){
+    for(int index = sizeof(clock->time) - 1; index >= 0; index--){
+        clock->time[index]++;
+
+        if (clock->time[index] > BCD_LIMITS[index % 2]){
+            clock->time[index] = INITIAL_VALUE;
+        } else {
+            break;
+        }
+    }
+    //if (clock->time[HOURS_TENS] == MAX_HOURS_TENS_VALUE){
+    //    if (clock->time[HOURS_UNITS] == MAX_HOURS_UNITS_VALUE){
+    //        clock->time[HOURS_TENS] = INITIAL_VALUE;
+    //        clock->time[HOURS_UNITS] = INITIAL_VALUE;
+    //    }
+    //}
+}
+*/
 
 clock_t ClockCreate(uint16_t ticks_per_second){
     instances.valid = false;
@@ -32,6 +56,7 @@ bool ClockGetTime(clock_t clock, uint8_t *time, uint8_t size){
 
 void ClockSetupTime(clock_t clock, uint8_t const * const time, uint8_t size){
     memcpy(clock->time, time, size);
+    //memcpy(clock->time, time, size);
     clock->valid = true;
 }
 
@@ -54,4 +79,13 @@ void ClockNewTick(clock_t clock){
 
         }
     }
+}
+
+void ClockSetupAlarm(clock_t clock, uint8_t const * const alarm, uint8_t size){
+    memcpy(clock->alarm, alarm, size);
+}
+
+bool ClockGetAlarm(clock_t clock, uint8_t * alarm, uint8_t size){
+    memcpy(alarm, clock->alarm, size);
+    return true;
 }

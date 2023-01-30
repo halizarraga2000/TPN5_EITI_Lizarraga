@@ -59,6 +59,7 @@ void test_set_up_current_time(void){
 void test_one_second_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 3, 4, 0, 1};
     uint8_t hora[6];
+
     SimulateSeconds(1);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
@@ -67,23 +68,56 @@ void test_one_second_elapsed(void){
 void test_ten_second_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 3, 4, 1, 0};
     uint8_t hora[6];
+
     SimulateSeconds(10);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
 
-void test_one_minute_second_elapsed(void){
+void test_one_minute_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 3, 5, 0, 0};
     uint8_t hora[6];
+
     SimulateSeconds(60);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
 
-void test_ten_minutes_second_elapsed(void){
+void test_ten_minutes_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 2, 4, 4, 0, 0};
     uint8_t hora[6];
+
     SimulateSeconds(10 * 60);
     ClockGetTime(reloj, hora, sizeof(hora));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
+
+void test_setup_and_get_alarm(void){
+    static const uint8_t ALARMA[]={1, 2, 3, 5};
+    uint8_t hora[4];
+
+    ClockSetupAlarm(reloj, ALARMA, sizeof(ALARMA));
+    TEST_ASSERT_TRUE(ClockGetAlarm(reloj, hora, sizeof(hora)));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ALARMA, hora, sizeof(ALARMA));
+}
+
+
+/*
+void test_one_hour_elapsed(void){
+    static const uint8_t ESPERADO[] = {1, 3, 3, 4, 0, 0};
+    uint8_t hora[6];
+
+    SimulateSeconds(ONE_HOUR);
+    ClockGetTime(reloj, hora, sizeof(hora));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
+}
+
+void test_ten_hour_elapsed(void){
+    static const uint8_t ESPERADO[] = {2, 2, 3, 4, 0, 0};
+    uint8_t hora[6];
+    
+    SimulateSeconds(TEN_HOURS);
+    ClockGetTime(reloj, hora, sizeof(hora));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
+}
+*/
