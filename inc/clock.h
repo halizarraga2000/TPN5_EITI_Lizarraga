@@ -14,3 +14,5 @@ void ClockNewTick(clock_t clock);
 void ClockSetupAlarm(clock_t clock, uint8_t const * const alarm, uint8_t size);
 
 bool ClockGetAlarm(clock_t clock, uint8_t * alarm, uint8_t size);
+
+bool ClockToggleAlarm(clock_t clock);

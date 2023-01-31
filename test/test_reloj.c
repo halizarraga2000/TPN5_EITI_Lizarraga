@@ -38,11 +38,14 @@ void setUp(void){
 
 void test_start_up(void){
     static const uint8_t ESPERADO[] = {0, 0, 0, 0, 0, 0};
+
     uint8_t hora[6];
-    clock_t reloj = ClockCreate(TICKS_PER_SECOND);
+    uint8_t alarma[4];
+    reloj = ClockCreate(TICKS_PER_SECOND);
 
     TEST_ASSERT_FALSE(ClockGetTime(reloj, hora, sizeof(hora)));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
+    TEST_ASSERT_FALSE(ClockGetAlarm(reloj, alarma, sizeof(alarma)));
 }
 
 // Configurar la libraria, ajustar la hora (con valores correctos), consultar la hora y tiene que ser valida.
@@ -93,11 +96,22 @@ void test_ten_minutes_elapsed(void){
 }
 
 void test_setup_and_get_alarm(void){
-    static const uint8_t ALARMA[]={1, 2, 3, 5};
+    static const uint8_t ALARMA[] = {1, 2, 3, 5};
     uint8_t hora[4];
 
     ClockSetupAlarm(reloj, ALARMA, sizeof(ALARMA));
     TEST_ASSERT_TRUE(ClockGetAlarm(reloj, hora, sizeof(hora)));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ALARMA, hora, sizeof(ALARMA));
+}
+
+void test_setup_and_disable_alarm(void){
+    static const uint8_t ALARMA[] = {1, 2, 3, 5};
+    uint8_t hora[4];
+
+    ClockSetupAlarm(reloj, ALARMA, sizeof(ALARMA));
+    TEST_ASSERT_FALSE(ClockToggleAlarm(reloj));
+
+    TEST_ASSERT_FALSE(ClockGetAlarm(reloj, hora, sizeof(hora)));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ALARMA, hora, sizeof(ALARMA));
 }
 
