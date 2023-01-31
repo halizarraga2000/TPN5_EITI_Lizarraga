@@ -128,6 +128,16 @@ void test_setup_and_fire_alarm(void){
     TEST_ASSERT_TRUE(alarm_state);
 }
 
+void test_setup_and_not_fire_alarm(void){
+    static const uint8_t ALARMA[] = {1, 2, 3, 5};
+
+    ClockSetupAlarm(reloj, ALARMA, sizeof(ALARMA));
+    ClockToggleAlarm(reloj);
+
+    SimulateSeconds(60);
+    TEST_ASSERT_FALSE(alarm_state);
+}
+
 /*
 void test_one_hour_elapsed(void){
     static const uint8_t ESPERADO[] = {1, 3, 3, 4, 0, 0};
