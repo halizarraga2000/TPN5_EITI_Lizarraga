@@ -21,6 +21,7 @@ x-> 4) Simular el paso de n ciclos de reloj, consultar la hora y verificar que a
 #define TICKS_PER_SECOND 5
 
 clock_t reloj;
+bool alarm_state;
 
 void SimulateSeconds(int seconds) {
     for(int index = 0; index < seconds * TICKS_PER_SECOND; index++){
@@ -28,11 +29,15 @@ void SimulateSeconds(int seconds) {
     }
 }
 
+void AlarmEventHandler(clock_t clock, bool state){
+    alarm_state = state;
+}
+
 void setUp(void){
     static const uint8_t INICIAL[] = {1, 2, 3, 4};
-    reloj = ClockCreate(TICKS_PER_SECOND);
+    reloj = ClockCreate(TICKS_PER_SECOND, AlarmEventHandler);
     ClockSetupTime(reloj, INICIAL, sizeof(INICIAL));  
-
+    alarm_state = false;
 }
 // Configurar la libreria, consultar la hora y tiene que ser invalida.
 
@@ -41,7 +46,7 @@ void test_start_up(void){
 
     uint8_t hora[6];
     uint8_t alarma[4];
-    reloj = ClockCreate(TICKS_PER_SECOND);
+    reloj = ClockCreate(TICKS_PER_SECOND, AlarmEventHandler);
 
     TEST_ASSERT_FALSE(ClockGetTime(reloj, hora, sizeof(hora)));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
@@ -115,6 +120,13 @@ void test_setup_and_disable_alarm(void){
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ALARMA, hora, sizeof(ALARMA));
 }
 
+void test_setup_and_fire_alarm(void){
+    static const uint8_t ALARMA[] = {1, 2, 3, 5};
+
+    ClockSetupAlarm(reloj, ALARMA, sizeof(ALARMA));
+    SimulateSeconds(60);
+    TEST_ASSERT_TRUE(alarm_state);
+}
 
 /*
 void test_one_hour_elapsed(void){
